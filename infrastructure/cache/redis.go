@@ -1,6 +1,8 @@
 package cache
 
 import (
+	"fmt"
+
 	"github.com/go-redis/redis"
 )
 
@@ -8,10 +10,19 @@ type Redis struct {
 	conn *redis.Client
 }
 
-func ConnectRedis() *Redis {
+func ConnectRedis() (*Redis, error) {
 	redisClient := Redis{}
-	redisClient.conn = redis.NewClient(&redis.Options{})
-	return &redisClient
+
+	redisConn := redis.NewClient(&redis.Options{})
+
+	_, err := redisConn.Ping().Result()
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Print("Redis server connected")
+
+	return &redisClient, nil
 }
 
 func (r *Redis) Set(key string, value interface{}) error {

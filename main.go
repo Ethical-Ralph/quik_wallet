@@ -12,7 +12,11 @@ import (
 func main() {
 	router := gin.Default()
 
-	redis := cache.ConnectRedis()
+	redis, err := cache.ConnectRedis()
+	if err != nil {
+		panic(err)
+	}
+
 	databaseConn, err := database.Connect()
 	if err != nil {
 		panic(err)
