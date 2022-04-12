@@ -21,13 +21,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	mysqlRepo := repository.NewMySQLRepository(databaseConn)
 
 	cache := cache.NewCache(redis)
 	repository := repository.NewRepository(mysqlRepo)
 
 	service := service.NewService(&repository, &cache)
-
 	server := server.NewServer(service, router)
 
 	server.Run()
