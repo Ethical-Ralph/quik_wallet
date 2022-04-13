@@ -34,7 +34,7 @@ func main() {
 	repository := repository.NewRepository(mysqlRepo)
 
 	cache := cache.NewCache(redis)
-	service := service.NewService(&repository, &cache)
+	service := service.NewService(repository, cache)
 
 	server := server.NewServer(service, router)
 

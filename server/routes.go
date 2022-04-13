@@ -10,6 +10,7 @@ func (s *Server) Routes() *gin.Engine {
 		r.GET("/wallet/:wallet_id/balance", s.GetWallet())
 		r.POST("/wallet/:wallet_id/credit", s.CreditWallet())
 		r.POST("/wallet/:wallet_id/debit", s.DebitWallet())
+		r.POST("/wallet/create", s.CreateWallet())
 	}
 
 	return router
