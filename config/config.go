@@ -10,7 +10,6 @@ import (
 type config struct {
 	DATABASE_URL   string
 	REDIS_ADDRESS  string
-	REDIS_USERNAME string
 	REDIS_PASSWORD string
 }
 
@@ -33,12 +32,10 @@ func Load() *config {
 
 	}
 
-	redis_username := os.Getenv("REDIS_USERNAME")
 	redis_password := os.Getenv("REDIS_PASSWORD")
 
 	c.DATABASE_URL = db_url
 	c.REDIS_ADDRESS = redis_addr
-	c.REDIS_USERNAME = redis_username
 	c.REDIS_PASSWORD = redis_password
 
 	return c
