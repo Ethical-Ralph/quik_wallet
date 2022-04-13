@@ -31,5 +31,16 @@ func (r *Redis) Set(key string, value interface{}) error {
 }
 
 func (r *Redis) Get(key string) string {
-	return r.Get(key)
+	val, err := r.conn.Get(key).Result()
+	if err == redis.Nil {
+		return ""
+	} else if err != nil {
+		return ""
+	} else {
+		return val
+	}
+}
+
+func (r *Redis) Del(key string) {
+	r.conn.Del(key)
 }

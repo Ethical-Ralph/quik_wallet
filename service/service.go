@@ -32,15 +32,44 @@ func (s *Service) CreateWallet(wallet *models.Wallet) error {
 }
 
 func (s *Service) GetWalletBalance(walletId string) (interface{}, error) {
-	wallet, err := s.repository.FindWallet(walletId)
-	if err != nil {
-		return nil, err
+	fromCache := s.cache.Get(walletId)
+	var amount float64
+
+	getFromDb := func() (*float64, error) {
+		wallet, err := s.repository.FindWallet(walletId)
+		if err != nil {
+			return nil, err
+		}
+		s.cache.Set(walletId, wallet.Balance)
+		return &wallet.Balance, nil
+	}
+
+	if fromCache != "" {
+		decimalAmount, err := decimal.NewFromString(fromCache)
+		if err != nil {
+			balance, err := getFromDb()
+			if err != nil {
+				return nil, err
+			}
+
+			amount = *balance
+		} else {
+			amount, _ = decimalAmount.Float64()
+		}
+
+	} else {
+		balance, err := getFromDb()
+		if err != nil {
+			return nil, err
+		}
+
+		amount = *balance
 	}
 
 	return struct {
 		Balance float64 `json:"balance"`
 	}{
-		Balance: wallet.Balance,
+		Balance: amount,
 	}, nil
 }
 
@@ -66,6 +95,7 @@ func (s *Service) CreditWallet(walletId string, amount float64) error {
 	if err != nil {
 		return err
 	}
+	s.cache.Del(walletId)
 
 	return nil
 }
@@ -96,6 +126,7 @@ func (s *Service) DebitWallet(walletId string, amount float64) error {
 	if err != nil {
 		return err
 	}
+	s.cache.Del(walletId)
 
 	return nil
 }
