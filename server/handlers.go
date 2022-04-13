@@ -13,3 +13,19 @@ func (s *Server) GetWallet() gin.HandlerFunc {
 		})
 	}
 }
+
+func (s *Server) CreditWallet() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.JSON(http.StatusOK, map[string]interface{}{
+			"sucess": true,
+		})
+	}
+}
+
+func (s *Server) DebitWallet() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.JSON(http.StatusOK, map[string]interface{}{
+			"sucess": true,
+		})
+	}
+}
