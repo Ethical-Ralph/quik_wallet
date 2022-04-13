@@ -1,7 +1,7 @@
 package repository
 
 type Repository interface {
-	CreateWallet()
+	CreateWallet(walletIdentifier string) error
 	// DebitWallet()
 	// CreditWallet()
 }

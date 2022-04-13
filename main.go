@@ -31,11 +31,11 @@ func main() {
 	}
 
 	mysqlRepo := repository.NewMySQLRepository(databaseConn)
-
-	cache := cache.NewCache(redis)
 	repository := repository.NewRepository(mysqlRepo)
 
+	cache := cache.NewCache(redis)
 	service := service.NewService(&repository, &cache)
+
 	server := server.NewServer(service, router)
 
 	server.Run()
