@@ -1,18 +1,19 @@
 package database
 
 import (
-	"gorm.io/driver/mysql"
+	"fmt"
+
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func Connect() (*gorm.DB, error) {
-	connectionString := "databaseurl"
-	db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
+func Connect(connectionString string) (*gorm.DB, error) {
+	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
 
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Println("database connected")
 	RunMigration(db)
 
 	return db, nil
