@@ -25,7 +25,6 @@ func (s *Server) Run() error {
 	r := s.Routes()
 
 	err := r.Run()
-
 	if err != nil {
 		return err
 	}
