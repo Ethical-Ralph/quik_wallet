@@ -10,18 +10,19 @@ type Redis struct {
 	conn *redis.Client
 }
 
-func ConnectRedis() (*Redis, error) {
+func ConnectRedis(options *redis.Options) (*Redis, error) {
 	redisClient := Redis{}
 
-	redisConn := redis.NewClient(&redis.Options{})
+	redisConn := redis.NewClient(options)
 
 	_, err := redisConn.Ping().Result()
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Print("Redis server connected")
+	fmt.Println("Redis server connected")
 
+	redisClient.conn = redisConn
 	return &redisClient, nil
 }
 
