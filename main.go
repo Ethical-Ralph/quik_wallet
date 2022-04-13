@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/Ethical-Ralph/quik_wallet/config"
 	"github.com/Ethical-Ralph/quik_wallet/infrastructure/cache"
 	"github.com/Ethical-Ralph/quik_wallet/infrastructure/database"
@@ -9,10 +11,14 @@ import (
 	"github.com/Ethical-Ralph/quik_wallet/service"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
 	router := gin.Default()
+	var logger = logrus.New()
+	logger.SetFormatter(&logrus.JSONFormatter{})
+	logger.SetOutput(os.Stdout)
 
 	config := config.Load()
 
@@ -36,7 +42,7 @@ func main() {
 	cache := cache.NewCache(redis)
 	service := service.NewService(repository, cache)
 
-	server := server.NewServer(service, router)
+	server := server.NewServer(service, router, logger)
 
 	server.Run()
 
