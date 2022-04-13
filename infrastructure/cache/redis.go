@@ -29,3 +29,7 @@ func ConnectRedis(options *redis.Options) (*Redis, error) {
 func (r *Redis) Set(key string, value interface{}) error {
 	return r.conn.Set(key, value, 0).Err()
 }
+
+func (r *Redis) Get(key string) string {
+	return r.Get(key)
+}
