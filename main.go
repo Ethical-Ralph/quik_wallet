@@ -16,7 +16,8 @@ import (
 
 func main() {
 	router := gin.Default()
-	var logger = logrus.New()
+
+	logger := logrus.New()
 	logger.SetFormatter(&logrus.JSONFormatter{})
 	logger.SetOutput(os.Stdout)
 
