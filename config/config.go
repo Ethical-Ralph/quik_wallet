@@ -14,7 +14,9 @@ type config struct {
 	REDIS_PASSWORD string
 }
 
-func (c *config) LoadConfigs() {
+func Load() *config {
+	c := &config{}
+
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("Error loading .env file")
@@ -38,4 +40,6 @@ func (c *config) LoadConfigs() {
 	c.REDIS_ADDRESS = redis_addr
 	c.REDIS_USERNAME = redis_username
 	c.REDIS_PASSWORD = redis_password
+
+	return c
 }
