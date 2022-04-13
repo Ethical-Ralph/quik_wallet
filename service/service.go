@@ -23,7 +23,16 @@ func (s *Service) CreateWallet(wallet *models.Wallet) error {
 		return errors.New("Wallet Identifier can not be empty")
 	}
 
-	err := s.repository.CreateWallet(wallet.WalletIdentifier)
+	walletExist, err := s.repository.FindWallet(wallet.WalletIdentifier)
+	if err != nil {
+		return errors.New("An internal error ocurred")
+	}
+
+	if walletExist != nil {
+		return errors.New("Wallet with this identifier already exist")
+	}
+
+	err = s.repository.CreateWallet(wallet.WalletIdentifier)
 	if err != nil {
 		return err
 	}
@@ -37,6 +46,11 @@ func (s *Service) GetWalletBalance(walletId string) (interface{}, error) {
 
 	getFromDb := func() (*float64, error) {
 		wallet, err := s.repository.FindWallet(walletId)
+
+		if wallet == nil {
+			return nil, errors.New("Wallet doesn't exist")
+		}
+
 		if err != nil {
 			return nil, err
 		}
@@ -86,6 +100,10 @@ func (s *Service) CreditWallet(walletId string, amount float64) error {
 		return err
 	}
 
+	if wallet == nil {
+		return errors.New("Wallet doesn't exist")
+	}
+
 	walletBalance := decimal.NewFromFloat(wallet.Balance)
 
 	totalAmount := walletBalance.Add(amountToAdd)
@@ -111,6 +129,10 @@ func (s *Service) DebitWallet(walletId string, amount float64) error {
 	wallet, err := s.repository.FindWallet(walletId)
 	if err != nil {
 		return err
+	}
+
+	if wallet == nil {
+		return errors.New("Wallet doesn't exist")
 	}
 
 	walletBalance := decimal.NewFromFloat(wallet.Balance)

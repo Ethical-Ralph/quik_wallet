@@ -28,6 +28,11 @@ func (s *Server) CreateWallet() gin.HandlerFunc {
 			})
 			return
 		}
+
+		c.JSON(http.StatusCreated, gin.H{
+			"success": true,
+			"message": "Wallet created successfully",
+		})
 	}
 }
 
