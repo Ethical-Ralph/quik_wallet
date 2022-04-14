@@ -33,7 +33,7 @@ func (r *redisMock) Get(key string) string {
 	if key == "wallet_from_cache" {
 		return walletBalanceFromCache
 	}
-	return "value"
+	return ""
 }
 
 func (r *redisMock) Del(key string) {

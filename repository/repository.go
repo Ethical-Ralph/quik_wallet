@@ -6,8 +6,6 @@ type Repository interface {
 	CreateWallet(walletIdentifier string) error
 	FindWallet(walletId string) (*models.Wallet, error)
 	UpdateWalletBalance(walletId string, amount float64) error
-	// DebitWallet()
-	// CreditWallet()
 }
 
 func NewRepository(storageRepository Repository) Repository {
