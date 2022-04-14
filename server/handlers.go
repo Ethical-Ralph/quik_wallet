@@ -51,8 +51,8 @@ func (s *Server) GetWallet() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"sucess": true,
-			"data":   wallet,
+			"success": true,
+			"data":    wallet,
 		})
 	}
 }
@@ -84,7 +84,7 @@ func (s *Server) CreditWallet() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"sucess":  true,
+			"success": true,
 			"message": "Wallet credited successfully",
 		})
 	}
@@ -113,7 +113,7 @@ func (s *Server) DebitWallet() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"sucess":  true,
+			"success": true,
 			"message": "Wallet debited successfully",
 		})
 	}
