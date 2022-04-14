@@ -25,7 +25,7 @@ func (r *Redis) Set(key string, value interface{}) error {
 
 func (r *Redis) Get(key string) string {
 	if key == "wallet_id" {
-		return "123dd.43"
+		return "123.43"
 	}
 	return "value"
 }
@@ -88,7 +88,7 @@ func MakeRequest(url string, method string, payload []byte) (*httptest.ResponseR
 	return w, nil
 }
 func TestGetWallet(t *testing.T) {
-	request, err := MakeRequest("/api/v1/wallet/1/balance", http.MethodGet, nil)
+	request, err := MakeRequest("/api/v1/wallet/wallet_id/balance", http.MethodGet, nil)
 	if err != nil {
 		t.Fatalf("Couldn't make request: %v\n", err)
 	}
