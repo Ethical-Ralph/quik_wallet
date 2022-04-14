@@ -14,9 +14,9 @@ go get
 
 ##### Set up ENV config
 
-DATABASE_URL=
-REDIS_ADDRESS=
-REDIS_PASSWORD=
+`DATABASE_URL=`
+`REDIS_ADDRESS=`
+`REDIS_PASSWORD=`
 
 ## Start
 
