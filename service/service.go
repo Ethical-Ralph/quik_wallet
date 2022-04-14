@@ -28,7 +28,7 @@ func (s *Service) CreateWallet(wallet *models.Wallet) error {
 		return errors.New("An internal error ocurred")
 	}
 
-	if walletExist.WalletIdentifier == wallet.WalletIdentifier {
+	if walletExist != nil && walletExist.WalletIdentifier == wallet.WalletIdentifier {
 		return errors.New("Wallet with this identifier already exist")
 	}
 
