@@ -70,7 +70,8 @@ func (s *Server) CreditWallet() gin.HandlerFunc {
 		err := c.BindJSON(&payload)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid JSON Object",
+				"error":   "Invalid JSON Object",
+				"success": false,
 			})
 			return
 		}
@@ -78,7 +79,8 @@ func (s *Server) CreditWallet() gin.HandlerFunc {
 		err = s.service.CreditWallet(walletId, payload.Amount)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
+				"error":   err.Error(),
+				"success": false,
 			})
 			return
 		}
@@ -99,7 +101,8 @@ func (s *Server) DebitWallet() gin.HandlerFunc {
 		err := c.BindJSON(&payload)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid JSON Object",
+				"error":   "Invalid JSON Object",
+				"success": false,
 			})
 			return
 		}
@@ -107,7 +110,8 @@ func (s *Server) DebitWallet() gin.HandlerFunc {
 		err = s.service.DebitWallet(walletId, payload.Amount)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
+				"error":   err.Error(),
+				"success": false,
 			})
 			return
 		}
