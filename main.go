@@ -46,4 +46,5 @@ func main() {
 	server := server.NewServer(service, router, logger)
 
 	server.Run()
+
 }

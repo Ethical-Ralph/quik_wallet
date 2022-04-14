@@ -16,47 +16,47 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type Redis struct {
+type redisMock struct {
 }
 
-func (r *Redis) Set(key string, value interface{}) error {
+func (r *redisMock) Set(key string, value interface{}) error {
 	return nil
 }
 
-func (r *Redis) Get(key string) string {
+func (r *redisMock) Get(key string) string {
 	if key == "wallet_id" {
 		return "123.43"
 	}
 	return "value"
 }
 
-func (r *Redis) Del(key string) {
+func (r *redisMock) Del(key string) {
 }
 
-func mockRedis() *Redis {
-	return &Redis{}
+func mockRedis() *redisMock {
+	return &redisMock{}
 }
 
-type Repository struct {
+type repositoryMock struct {
 }
 
-func (r *Repository) CreateWallet(walletIdentifier string) error {
+func (r *repositoryMock) CreateWallet(walletIdentifier string) error {
 	return nil
 }
 
-func (r *Repository) FindWallet(walletId string) (*models.Wallet, error) {
+func (r *repositoryMock) FindWallet(walletId string) (*models.Wallet, error) {
 	return &models.Wallet{}, nil
 }
 
-func (r *Repository) UpdateWalletBalance(walletId string, amount float64) error {
+func (r *repositoryMock) UpdateWalletBalance(walletId string, amount float64) error {
 	return nil
 }
 
-func mockRepo() *Repository {
-	return &Repository{}
+func mockRepo() *repositoryMock {
+	return &repositoryMock{}
 }
 
-func BootStrapServer() *gin.Engine {
+func bootStrapServer() *gin.Engine {
 	router := gin.Default()
 	gin.SetMode(gin.TestMode)
 
@@ -73,8 +73,8 @@ func BootStrapServer() *gin.Engine {
 	return server.Routes()
 }
 
-func MakeRequest(url string, method string, payload []byte) (*httptest.ResponseRecorder, error) {
-	server := BootStrapServer()
+func makeRequest(url string, method string, payload []byte) (*httptest.ResponseRecorder, error) {
+	server := bootStrapServer()
 
 	req, err := http.NewRequest(method, url, bytes.NewBuffer(payload))
 	if err != nil {
@@ -88,7 +88,7 @@ func MakeRequest(url string, method string, payload []byte) (*httptest.ResponseR
 	return w, nil
 }
 func TestGetWallet(t *testing.T) {
-	request, err := MakeRequest("/api/v1/wallet/wallet_id/balance", http.MethodGet, nil)
+	request, err := makeRequest("/api/v1/wallet/wallet_id/balance", http.MethodGet, nil)
 	if err != nil {
 		t.Fatalf("Couldn't make request: %v\n", err)
 	}
@@ -100,7 +100,7 @@ func TestGetWallet(t *testing.T) {
 }
 
 func TestCreateWallet(t *testing.T) {
-	request, err := MakeRequest("/api/v1/wallet/create", http.MethodPost, []byte(`{"walletIdentifier": "wallet"}`))
+	request, err := makeRequest("/api/v1/wallet/create", http.MethodPost, []byte(`{"walletIdentifier": "wallet"}`))
 	if err != nil {
 		t.Fatalf("Couldn't make request: %v\n", err)
 	}
