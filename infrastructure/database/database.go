@@ -17,7 +17,9 @@ func Connect(connectionString string) (*gorm.DB, error) {
 		return nil, err
 	}
 	fmt.Println("database connected")
-	RunMigration(db)
+	if err := RunMigration(db); err != nil {
+		return nil, err
+	}
 
 	return db, nil
 }
