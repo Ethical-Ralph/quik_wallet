@@ -87,21 +87,21 @@ func (s *Service) GetWalletBalance(walletId string) (interface{}, error) {
 	}, nil
 }
 
-func (s *Service) CreditWallet(walletId string, amount float64) error {
+func (s *Service) CreditWallet(walletId string, amount float64) (*float64, error) {
 	zero := decimal.NewFromInt(0)
 	amountToAdd := decimal.NewFromFloat(amount)
 
 	if amountToAdd.LessThanOrEqual(zero) {
-		return errors.New("Invalid Amount")
+		return nil, errors.New("Invalid Amount")
 	}
 
 	wallet, err := s.repository.FindWallet(walletId)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if wallet == nil {
-		return errors.New("Wallet doesn't exist")
+		return nil, errors.New("Wallet doesn't exist")
 	}
 
 	walletBalance := decimal.NewFromFloat(wallet.Balance)
@@ -111,44 +111,44 @@ func (s *Service) CreditWallet(walletId string, amount float64) error {
 
 	err = s.repository.UpdateWalletBalance(walletId, totalAmountTofloat)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	s.cache.Del(walletId)
 
-	return nil
+	return &totalAmountTofloat, nil
 }
 
-func (s *Service) DebitWallet(walletId string, amount float64) error {
+func (s *Service) DebitWallet(walletId string, amount float64) (*float64, error) {
 	zero := decimal.NewFromInt(0)
 	amountToSub := decimal.NewFromFloat(amount)
 
 	if amountToSub.LessThanOrEqual(zero) {
-		return errors.New("Invalid Amount")
+		return nil, errors.New("Invalid Amount")
 	}
 
 	wallet, err := s.repository.FindWallet(walletId)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if wallet == nil {
-		return errors.New("Wallet doesn't exist")
+		return nil, errors.New("Wallet doesn't exist")
 	}
 
 	walletBalance := decimal.NewFromFloat(wallet.Balance)
 	totalAmount := walletBalance.Sub(amountToSub)
 
 	if totalAmount.LessThan(zero) {
-		return errors.New("Insufficent Balance")
+		return nil, errors.New("Insufficent Balance")
 	}
 
 	totalAmountTofloat, _ := totalAmount.Float64()
 
 	err = s.repository.UpdateWalletBalance(walletId, totalAmountTofloat)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	s.cache.Del(walletId)
 
-	return nil
+	return &totalAmountTofloat, nil
 }

@@ -79,7 +79,7 @@ func (s *Server) CreditWallet() gin.HandlerFunc {
 			return
 		}
 
-		err = s.service.CreditWallet(walletId, payload.Amount)
+		newBalance, err := s.service.CreditWallet(walletId, payload.Amount)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error":   err.Error(),
@@ -91,6 +91,9 @@ func (s *Server) CreditWallet() gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,
 			"message": "Wallet credited successfully",
+			"data": gin.H{
+				"balance": newBalance,
+			},
 		})
 	}
 }
@@ -110,7 +113,7 @@ func (s *Server) DebitWallet() gin.HandlerFunc {
 			return
 		}
 
-		err = s.service.DebitWallet(walletId, payload.Amount)
+		newBalance, err := s.service.DebitWallet(walletId, payload.Amount)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error":   err.Error(),
@@ -122,6 +125,9 @@ func (s *Server) DebitWallet() gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,
 			"message": "Wallet debited successfully",
+			"data": gin.H{
+				"balance": newBalance,
+			},
 		})
 	}
 }
