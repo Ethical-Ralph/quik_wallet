@@ -56,6 +56,7 @@ func (s *Server) GetWallet() gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,
 			"data":    wallet,
+			"message": "Wallet balance fetched successfully",
 		})
 	}
 }
