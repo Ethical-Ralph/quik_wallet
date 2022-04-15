@@ -28,6 +28,7 @@ func (r *redisMock) Set(key string, value interface{}) error {
 
 var walletBalanceFromCache string = "123.43"
 var walletBalanceFromDB float64 = 232.34
+var walletExistBalance float64 = 500
 
 func (r *redisMock) Get(key string) string {
 	if key == "wallet_from_cache" {
@@ -60,7 +61,7 @@ func (r *repositoryMock) FindWallet(walletId string) (*models.Wallet, error) {
 	case "wallet_exist":
 		return &models.Wallet{
 			WalletIdentifier: "wallet_exist",
-			Balance:          0,
+			Balance:          walletExistBalance,
 		}, nil
 	case "wallet_from_db":
 		return &models.Wallet{
@@ -117,7 +118,8 @@ type Data struct {
 }
 type walletBalanceResponseStuct struct {
 	Data    Data
-	Success bool `json:"success"`
+	Success bool   `json:"success"`
+	Message string `json:"message"`
 }
 
 func TestGetWalletGetFromCache(t *testing.T) {
@@ -195,13 +197,14 @@ type errorResponseStuct struct {
 
 func TestCreditWallet(t *testing.T) {
 	wallet_id := "wallet_exist"
+	amount_to_credit := 100
 
-	request, err := makeRequest(fmt.Sprintf("/api/v1/wallet/%s/credit", wallet_id), http.MethodPost, []byte(`{"amount": 232}`))
+	request, err := makeRequest(fmt.Sprintf("/api/v1/wallet/%s/credit", wallet_id), http.MethodPost, []byte(fmt.Sprintf(`{"amount": %d}`, amount_to_credit)))
 	if err != nil {
 		t.Fatalf("Couldn't make request: %v\n", err)
 	}
 
-	res := responseStuct{}
+	res := walletBalanceResponseStuct{}
 	err = json.Unmarshal(request.Body.Bytes(), &res)
 	if err != nil {
 		t.Fatal("Couldn't unmarshal JSON")
@@ -213,18 +216,29 @@ func TestCreditWallet(t *testing.T) {
 
 	if !res.Success {
 		t.Fatal("Credit Wallet Failed")
+	}
+
+	oldBal := decimal.NewFromFloat(walletExistBalance)
+	amountToCredit := decimal.NewFromInt(int64(amount_to_credit))
+
+	expected := oldBal.Add(amountToCredit)
+	value := decimal.NewFromFloat(res.Data.Balance)
+
+	if !expected.Equal(value) {
+		t.Fatalf("Expected to get balance %d but instead got %d\n", http.StatusOK, request.Code)
 	}
 }
 
 func TestDebitWallet(t *testing.T) {
-	wallet_id := "wallet_with_cash"
+	wallet_id := "wallet_exist"
+	amount_to_debit := 100
 
-	request, err := makeRequest(fmt.Sprintf("/api/v1/wallet/%s/debit", wallet_id), http.MethodPost, []byte(`{"amount": 232}`))
+	request, err := makeRequest(fmt.Sprintf("/api/v1/wallet/%s/debit", wallet_id), http.MethodPost, []byte(fmt.Sprintf(`{"amount": %d}`, amount_to_debit)))
 	if err != nil {
 		t.Fatalf("Couldn't make request: %v\n", err)
 	}
 
-	res := responseStuct{}
+	res := walletBalanceResponseStuct{}
 	err = json.Unmarshal(request.Body.Bytes(), &res)
 	if err != nil {
 		t.Fatal("Couldn't unmarshal JSON")
@@ -236,6 +250,16 @@ func TestDebitWallet(t *testing.T) {
 
 	if !res.Success {
 		t.Fatal("Credit Wallet Failed")
+	}
+
+	oldBal := decimal.NewFromFloat(walletExistBalance)
+	amountToDebit := decimal.NewFromInt(int64(amount_to_debit))
+
+	expected := oldBal.Sub(amountToDebit)
+	value := decimal.NewFromFloat(res.Data.Balance)
+
+	if !expected.Equal(value) {
+		t.Fatalf("Expected to get balance %d but instead got %d\n", http.StatusOK, request.Code)
 	}
 }
 
