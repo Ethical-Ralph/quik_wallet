@@ -29,3 +29,7 @@ go run main.go
 ```shell
 go test
 ```
+
+## Documentation
+
+- [Postman Documentation](https://documenter.getpostman.com/view/18201030/Uyr4Lg2x)
