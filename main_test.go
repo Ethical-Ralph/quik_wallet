@@ -81,6 +81,11 @@ func mockRepo() *repositoryMock {
 	return &repositoryMock{}
 }
 
+func to2sf(num decimal.Decimal) string {
+	n, _ := num.Float64()
+	return fmt.Sprintf("%.2f", n)
+}
+
 func bootStrapServer() *gin.Engine {
 	router := gin.Default()
 	gin.SetMode(gin.TestMode)
@@ -144,7 +149,7 @@ func TestGetWalletGetFromCache(t *testing.T) {
 	value := decimal.NewFromFloat(res.Data.Balance)
 
 	if !expected.Equal(value) {
-		t.Fatalf("Expected to get balance %d but instead got %d\n", http.StatusOK, request.Code)
+		t.Fatalf("Expected to get balance %s but instead got %s\n", to2sf(expected), to2sf(value))
 	}
 }
 
@@ -170,7 +175,7 @@ func TestGetWalletGetFromDB(t *testing.T) {
 	value := decimal.NewFromFloat(res.Data.Balance)
 
 	if !expected.Equal(value) {
-		t.Fatalf("Expected to get balance %d but instead got %d\n", http.StatusOK, request.Code)
+		t.Fatalf("Expected to get balance %s but instead got %s\n", to2sf(expected), to2sf(value))
 	}
 }
 
@@ -225,7 +230,7 @@ func TestCreditWallet(t *testing.T) {
 	value := decimal.NewFromFloat(res.Data.Balance)
 
 	if !expected.Equal(value) {
-		t.Fatalf("Expected to get balance %d but instead got %d\n", http.StatusOK, request.Code)
+		t.Fatalf("Expected to get balance %s but instead got %s\n", to2sf(expected), to2sf(value))
 	}
 }
 
@@ -259,7 +264,7 @@ func TestDebitWallet(t *testing.T) {
 	value := decimal.NewFromFloat(res.Data.Balance)
 
 	if !expected.Equal(value) {
-		t.Fatalf("Expected to get balance %d but instead got %d\n", http.StatusOK, request.Code)
+		t.Fatalf("Expected to get balance %s but instead got %s\n", to2sf(expected), to2sf(value))
 	}
 }
 
